@@ -10,6 +10,7 @@ import { PylontechNav } from "@/components/pylontech-nav";
 import { useResolvedVideoSrc } from "@/lib/video-source";
 import actesLogo from "@/assets/actes-logo-full.webp";
 import resBess from "@/assets/pylon/residential-bess.webp";
+import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/contact";
 
 export const Route = createFileRoute("/pylontech")({
   head: () => ({
@@ -58,7 +59,7 @@ const FOOTER = [
   { t: "الخدمة والدعم", l: ["كن شريكاً لنا", "مركز الخدمة", "تسجيل البطارية", "التحميلات"] },
   { t: "من نحن", l: ["نبذة عن الشركة", "ثقافة الشركة", "البحث والتطوير", "التصنيع", "الاستدامة"] },
   { t: "المركز الإعلامي", l: ["الأخبار", "المعارض", "الندوات الإلكترونية", "أخبار Voltdeer"] },
-  { t: "اتصل بنا", l: ["تواصل معنا", "انضم إلينا", "المبيعات: sales@pylontech.com.cn", "الخدمة: service@pylontech.com.cn", "ACTES — الوكيل المعتمد"] },
+  { t: "اتصل بنا", l: ["تواصل معنا", "انضم إلينا", `المبيعات: ${BUSINESS_PHONE}`, `الخدمة: ${BUSINESS_EMAIL}`, "ACTES — الوكيل المعتمد"] },
 ];
 
 function PylontechPage() {

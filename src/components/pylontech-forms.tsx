@@ -1,19 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { ExternalLink, Headphones, Mail, ShieldCheck } from "lucide-react";
+import { BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WHATSAPP, businessMailto } from "@/lib/contact";
 
 const input = "w-full rounded border border-border bg-background px-2.5 py-1.5 text-sm";
 
-function mailto(to: string, subject: string, fields: Record<string, string>) {
-  const body = Object.entries(fields).map(([k, v]) => `${k}: ${v}`).join("\n");
-  window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+function mailto(subject: string, fields: Record<string, string>) {
+  window.location.href = businessMailto(subject, fields);
 }
 
-function Form({ fields, to, subject, submit }: { fields: { k: string; l: string; type?: string; options?: string[] }[]; to: string; subject: string; submit: string }) {
+function Form({ fields, subject, submit }: { fields: { k: string; l: string; type?: string; options?: string[] }[]; subject: string; submit: string }) {
   const [sent, setSent] = useState(false);
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    mailto(to, subject, Object.fromEntries(fields.map((f) => [f.l, String(fd.get(f.k) ?? "")])));
+    mailto(subject, Object.fromEntries(fields.map((f) => [f.l, String(fd.get(f.k) ?? "")])));
     setSent(true);
   };
   return (
@@ -40,13 +40,13 @@ export function ServicePanel() {
       <div>
         <p className="mb-2 flex items-center gap-1 text-sm font-semibold text-[#00a5b0]"><Headphones className="h-4 w-4" />مركز الخدمة Service Center</p>
         <p className="text-xs leading-6 text-muted-foreground">افتح طلب دعم فني أو صيانة أو ضمان لدى فريق خدمة بايلونتك، أو تواصل مع فريق ACTES المحلي.</p>
-        <a href="https://pylontechsupport.zendesk.com/hc/en-us/requests/new" target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline"><ExternalLink className="h-3.5 w-3.5" />فتح تذكرة دعم فني</a>
-        <a href="mailto:service@pylontech.com.cn" className="mt-1 flex items-center gap-1 text-sm hover:text-primary" dir="ltr"><Mail className="h-3.5 w-3.5" />service@pylontech.com.cn</a>
+        <a href={`https://wa.me/${BUSINESS_WHATSAPP}`} target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline"><ExternalLink className="h-3.5 w-3.5" />{BUSINESS_PHONE}</a>
+        <a href={`mailto:${BUSINESS_EMAIL}`} className="mt-1 flex items-center gap-1 break-all text-sm hover:text-primary" dir="ltr"><Mail className="h-3.5 w-3.5 shrink-0" />{BUSINESS_EMAIL}</a>
       </div>
       <div>
         <p className="mb-2 flex items-center gap-1 text-sm font-semibold text-[#00a5b0]"><ShieldCheck className="h-4 w-4" />تسجيل البطارية Battery Registration</p>
         <p className="mb-2 text-xs leading-6 text-muted-foreground">تسجيل بطاريتك يتيح لنا تقديم خدمة وضمان أفضل. سيرسل لك فريق الخدمة رقم التسجيل النهائي.</p>
-        <Form to="service@pylontech.com.cn" subject="Battery Registration — تسجيل بطارية" submit="تسجيل البطارية"
+        <Form subject="Battery Registration — تسجيل بطارية" submit="تسجيل البطارية"
           fields={[
             { k: "type", l: "نوع النشاط", options: ["مستخدم نهائي", "فني تركيب", "موزع"] },
             { k: "name", l: "الاسم الكامل" },
@@ -59,7 +59,7 @@ export function ServicePanel() {
             { k: "sn", l: "الرقم التسلسلي S.N." },
             { k: "source", l: "مصدر الشراء" },
           ]} />
-        <a href="https://en.pylontech.com.cn/service/registration" target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"><ExternalLink className="h-3 w-3" />التسجيل مع رفع صور البطارية والفاتورة (الموقع الرسمي)</a>
+        <a href={businessMailto("تسجيل بطارية مع المرفقات", {})} className="mt-2 flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"><ExternalLink className="h-3 w-3" />التسجيل مع رفع صور البطارية والفاتورة</a>
       </div>
     </div>
   );
@@ -72,13 +72,13 @@ export function ContactPanel() {
         <p className="text-sm font-semibold text-[#00a5b0]">تواصل معنا Contact Us</p>
         <p className="text-xs leading-6 text-muted-foreground">نحن هنا لدعم رحلتك في الطاقة. لنمضِ قدماً معاً.</p>
         <div><p className="font-medium">المقر الرئيسي العالمي</p><p className="text-xs text-muted-foreground">Pylon Technologies Co., Ltd. — Shanghai, China</p></div>
-        <div><p className="font-medium">المبيعات Sales</p><a href="mailto:sales@pylontech.com.cn" dir="ltr" className="hover:text-primary">sales@pylontech.com.cn</a></div>
-        <div><p className="font-medium">الخدمة Service</p><a href="mailto:service@pylontech.com.cn" dir="ltr" className="hover:text-primary">service@pylontech.com.cn</a></div>
-        <a href="https://en.pylontech.com.cn/about/contact" target="_blank" rel="noreferrer" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary"><ExternalLink className="h-3 w-3" />جهات الاتصال الإقليمية</a>
+        <div><p className="font-medium">المبيعات Sales</p><a href={`mailto:${BUSINESS_EMAIL}`} dir="ltr" className="break-all hover:text-primary">{BUSINESS_EMAIL}</a></div>
+        <div><p className="font-medium">الخدمة Service</p><a href={`mailto:${BUSINESS_EMAIL}`} dir="ltr" className="break-all hover:text-primary">{BUSINESS_EMAIL}</a></div>
+        <a href={`tel:+${BUSINESS_WHATSAPP}`} dir="ltr" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary">{BUSINESS_PHONE}</a>
       </div>
       <div>
         <p className="mb-2 text-sm font-semibold text-[#00a5b0]">طلب استفسار Enquiry</p>
-        <Form to="sales@pylontech.com.cn" subject="Enquiry — استفسار" submit="إرسال الاستفسار"
+        <Form subject="Enquiry — استفسار" submit="إرسال الاستفسار"
           fields={[
             { k: "company", l: "اسم الشركة" },
             { k: "job", l: "المسمى الوظيفي" },

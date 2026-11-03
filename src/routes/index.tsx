@@ -97,6 +97,7 @@ import { buildView, formatSystemName, money, type QuoteItem, type View } from "@
 import { CERTIFICATES, CERTIFICATES_TITLE } from "@/lib/warranty";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyAdminPassword } from "@/lib/admin.functions";
+import { BUSINESS_WHATSAPP } from "@/lib/contact";
 import { notifyAdminWhatsapp } from "@/lib/notify.functions";
 import { ADMIN_NOTICE_BUTTONS, buildAdminNotice } from "@/lib/admin-notice";
 import { createOrder, createSalesRequest, setPayment, switchClient, type PaymentMethod } from "@/lib/orders";
@@ -122,7 +123,7 @@ export const Route = createFileRoute("/")({
   component: ActesApp,
 });
 
-const PHONE = "967700000000";
+const PHONE = BUSINESS_WHATSAPP;
 
 const STEP_LABELS: Record<string, string> = {
   start: "الرئيسية",
@@ -282,8 +283,21 @@ function ActesApp() {
       }
     } catch { /* ignore */ }
     if (window.localStorage.getItem("actes.admin") === "1" && window.localStorage.getItem("actes.adminpw")) {
-      setIsAdmin(true);
-      setGate("app");
+      const password = window.localStorage.getItem("actes.adminpw") || "";
+      void verifyAdminPassword({ data: { password } }).then((result) => {
+        if (result.ok) {
+          setIsAdmin(true);
+          setGate("app");
+        } else {
+          window.localStorage.removeItem("actes.admin");
+          window.localStorage.removeItem("actes.adminpw");
+          setIsAdmin(false);
+          setGate("admin-login");
+        }
+      }).catch(() => {
+        setIsAdmin(false);
+        setGate("admin-login");
+      });
       return;
     }
     // شاشة الترحيب هي أول شاشة دائماً؛ تسجيل الدخول يأتي لاحقاً عند طلب عرض سعر.

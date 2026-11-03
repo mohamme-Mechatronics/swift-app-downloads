@@ -1,6 +1,7 @@
 /* eslint-disable */
 // ACTES bot engine — ported verbatim from the n8n "State Machine" node.
 // Do not reformat: logic must stay identical to the WhatsApp bot.
+import { BUSINESS_PHONE } from './contact';
 
 const Buffer = {
   from: function (data, enc) {
@@ -169,10 +170,10 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
   function ecoHoursMsg(k) { if (k === 'system') { return ' بيانات المنظومة\n' + SEP + '\nاكتب بيانات منظومتك وتكلفتها بالدولار لنحسب جدواها الاقتصادية._'; } return k === 'diesel' ? ' استهلاك الديزل الساعي\n' + SEP + '\nاكتب استهلاك المولد باللتر في كل ساعة من الساعات الأربع والعشرين._' : ' الأحمال الساعية\n' + SEP + '\nاكتب الحمل بالكيلووات في كل ساعة من الساعات الأربع والعشرين._'; }
   function goStart() { return WEL_AR; }
 
-  var EMP_PHONE = '773590979';
+  var EMP_PHONE = BUSINESS_PHONE;
   // صور رسائل واتساب تُرسل لخدمة واتساب الخارجية، لذلك تحتاج رابطاً عاماً —
   // وهي الآن مستضافة داخل ملفات هذا المشروع نفسه (public/brand) وليس على موقع خارجي.
-  var BRAND_BASE = 'https://swift-app-downloads.lovable.app/brand';
+  var BRAND_BASE = '/brand';
   var LOGO_URL = BRAND_BASE + '/actes-logo.png';
   var MSG_HEADER_URL = BRAND_BASE + '/actes-message-header.jpg';
   var WELCOME_IMAGE_URL = MSG_HEADER_URL;
@@ -1650,7 +1651,7 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
 
   function actesFooter() {
     var t = '';
-    t += ' المبيعات: 770229994\n';
+    t += ' المبيعات: ' + BUSINESS_PHONE + '\n';
     t += ' الموقع: www.actesgroup.com\n';
     t += ' أكتس لأنظمة الطاقة وحلولها\n';
     return t;
@@ -2016,7 +2017,7 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
     t += 'ألواح: ' + r.panels + ' (' + PANEL_W + 'W -Suntech)\n\n';
     t += '(Pylontech)بطاريات: ' + r.bat + 'كيلو وات \n\n';
     t += SEP + '\n\n';
-    t += ' المبيعات:770229994*\n\n';
+    t += ' المبيعات:' + BUSINESS_PHONE + '*\n\n';
     t += ' الموقع: www.actesgroup.com\n\n';
     t += '_' + AC.replace('','').replace('','') + '_\n\n';
     t += comVisitAsk();
@@ -3156,9 +3157,8 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
 
   // ===================== الحسابات والإشعارات والمبيعات =====================
   var __quote_total = 0;
-  var FIN_PHONE = '773903901';
-  var SALES_PHONE = '773590979';
-  var SALES_PHONE_2 = '770229994';
+  var FIN_PHONE = BUSINESS_PHONE;
+  var SALES_PHONE = BUSINESS_PHONE;
   let extra_payloads = [];
   function waNum(num) { var v = String(num).replace(/[^0-9]/g, '').replace(/^0+/, ''); if (v.indexOf('967') !== 0) { v = '967' + v; } return v; }
   function waTo(num, body) {
@@ -3168,7 +3168,7 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
     var __w = payWayText();
     var __h = /محفظة|محافظ/.test(__w) ? ' التحويل عبر المحافظ الإلكترونية' : (/شبكة|شبكات/.test(__w) ? ' التحويل عبر الشبكات المحلية' : ' بيانات الحساب للتحويل');
     return W(__h + '\n' + SEP +
-      '\nالاسم:* أكتس لأستيراد أنظمة الطاقة\nرقم الجوال:* 773903901\n' + SEP +
+      '\nالاسم:* أكتس لأستيراد أنظمة الطاقة\nرقم الجوال:* ' + BUSINESS_PHONE + '\n' + SEP +
       '\nحوّل المبلغ المستحق على الرقم أعلاه._\n' +
       'ثم أرسل إشعار التحويل هنا (صورة أو نص)._');
   }
@@ -3237,14 +3237,6 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
       extra_payloads.push(waTo(cust, ' *' + BRAND_TXT + '\n' + SEP +
         '\nشكراً لك، لقد تم تأكيد فاتورتك._\nستتواصل معك إدارة المبيعات في شركة أكتس خلال لحظات._'));
       extra_payloads.push(waTo(SALES_PHONE, ' تأكيد وصول إشعار الحوالة\n' + SEP +
-        '\nتم تأكيد الفاتورة للعميل: ' + (customer_name || session.customer_name || '-') +
-        '\nرقم العميل: ' + cust +
-        '\nالموقع: ' + (city || '-') +
-        '\nطريقة الدفع: ' + (session.service_needed || service_needed || '-') +
-        '\nالوقت: ' + now.replace('T', ' ').substring(0, 16) + ' UTC\n' + SEP +
-        '\nيرجى متابعة العميل من قسم المبيعات._'));
-      // إرسال إشعار تأكيد الفاتورة أيضاً إلى الرقم الثاني للمبيعات/المتابعة.
-      extra_payloads.push(waTo(SALES_PHONE_2, ' تأكيد وصول إشعار الحوالة\n' + SEP +
         '\nتم تأكيد الفاتورة للعميل: ' + (customer_name || session.customer_name || '-') +
         '\nرقم العميل: ' + cust +
         '\nالموقع: ' + (city || '-') +
@@ -4545,7 +4537,7 @@ export function runStateMachine(__session, __parsed, __itemPrices) {
       '\nخيارات الدفع\n1 - التحويل عبر شركة محلية\n2 - التحويل عبر محافظ إلكترونية\n3 - الدفع عند الاستلام');
   }
   function salesContacts() {
-    return 'اتصال بمندوب المبيعات\n780480143\n780480145\n785588300';
+    return 'اتصال بمندوب المبيعات\n' + BUSINESS_PHONE;
   }
   function payNetworkAsk() {
     return W(' حوالات الشبكات المحلية\n' + SEP + '\nاكتب اسم الشبكة التي ستحوّل من خلالها\nمثال: النجم العمقي');

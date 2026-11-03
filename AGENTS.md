@@ -11,6 +11,9 @@
 
 ## Project rules
 
+- Business contact destinations are centralized in `src/lib/contact.ts`; use these values for all local sales, finance, support and registration handoffs so old recipients cannot persist in separate flows.
+- Admin password checks use the server-only `src/lib/admin-password.server.ts` helper and the encrypted `ADMIN_PASSWORD` setting; validate saved browser credentials on startup and require the same verification for invoice callbacks to prevent stale or unauthenticated admin access.
+
 - READ `HANDOFF.md` first; "أكمل" = continue its remaining product videos, 3 per batch.
 - Fonts are self-hosted in `public/fonts/` via `/fonts/fonts.css` in `src/routes/__root.tsx` — no external font requests.
 - All runtime media resolves to local paths (`/videos`, `/media`, `/catalogs`, `/fonts`, `/brand`) — never `/__l5e/` CDN or remote hosts, so the desktop app runs offline.

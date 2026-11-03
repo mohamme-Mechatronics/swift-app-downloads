@@ -1,22 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createHash, timingSafeEqual } from "node:crypto";
 
 // وصول آمن للطلبات والإشعارات بعد قفل الجدولين أمام الوصول العام:
 // - حساب العميل هو رقمه: يجلب طلبات رقمه فقط، ويحدّث طلباً يملك رمز وصوله (accessToken).
 // - الإدارة تصل لكل شيء بكلمة المرور التي تُفحص في الخادم.
 
-function matches(input: string, expected: string): boolean {
-  const a = createHash("sha256").update(input, "utf8").digest();
-  const b = createHash("sha256").update(expected, "utf8").digest();
-  return timingSafeEqual(a, b);
-}
-
-function checkAdmin(password: string): void {
-  const expected = process.env["ADMIN_PASSWORD"];
-  if (!expected || !password || !matches(password, expected)) {
-    throw new Error("Unauthorized");
-  }
-}
 
 async function db() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -35,7 +22,8 @@ const nowIso = () => new Date().toISOString();
 export const adminPullStore = createServerFn({ method: "POST" })
   .inputValidator((data: { password: string }) => ({ password: String(data?.password ?? "") }))
   .handler(async ({ data }) => {
-    checkAdmin(data.password);
+    const { checkAdminPassword } = await import("@/lib/admin-password.server");
+    await checkAdminPassword(data.password);
     const supabase = await db();
     const [ordersRes, notifsRes] = await Promise.all([
       supabase.from("orders").select("id, payload").limit(2000),
@@ -57,7 +45,8 @@ export const adminPushStore = createServerFn({ method: "POST" })
     notifs: Array.isArray(data?.notifs) ? data.notifs.slice(0, 5000) : [],
   }))
   .handler(async ({ data }) => {
-    checkAdmin(data.password);
+    const { checkAdminPassword } = await import("@/lib/admin-password.server");
+    await checkAdminPassword(data.password);
     const supabase = await db();
     if (data.orders.length) {
       const res = await supabase.from("orders").upsert(
