@@ -5,6 +5,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
 
+// Browser unit tests mount inside a div, not an SSR document shell.
+routeTree.update({ shellComponent: ({ children }) => children });
+
 function renderAt(path: string) {
   const queryClient = new QueryClient();
   const router = createRouter({
