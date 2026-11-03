@@ -10,7 +10,7 @@ import { PylontechNav } from "@/components/pylontech-nav";
 import { useResolvedVideoSrc } from "@/lib/video-source";
 import actesLogo from "@/assets/actes-logo-full.webp";
 import resBess from "@/assets/pylon/residential-bess.webp";
-import { BUSINESS_EMAIL, BUSINESS_PHONE } from "@/lib/contact";
+import { BUSINESS_EMAIL, BUSINESS_PHONE, BUSINESS_WHATSAPP } from "@/lib/contact";
 
 export const Route = createFileRoute("/pylontech")({
   head: () => ({
@@ -189,7 +189,7 @@ function PylontechPage() {
           {FOOTER.map((c) => (
             <div key={c.t}>
               <h3 className="mb-4 font-bold">{c.t}</h3>
-              <ul className="space-y-2 text-sm opacity-70">{c.l.map((x) => <li key={x}>{x}</li>)}</ul>
+              <ul className="space-y-2 break-words text-sm opacity-70">{c.l.map((x) => <li key={x}>{x.includes(BUSINESS_EMAIL) ? <a href={`mailto:${BUSINESS_EMAIL}`} className="break-all hover:underline">{x}</a> : x.includes(BUSINESS_PHONE) ? <a href={`tel:+${BUSINESS_WHATSAPP}`} className="hover:underline">{x}</a> : x}</li>)}</ul>
             </div>
           ))}
         </div>
