@@ -13,7 +13,7 @@ export default defineConfig({
   // طلبات العملاء تُرسل للإدارة عبر الموقع السحابي المنشور (الرابط الثابت للمشروع).
   define: {
     "import.meta.env.VITE_CLOUD_ORIGIN": JSON.stringify(
-      process.env.CLOUD_ORIGIN || "https://project--d70c63ed-340e-42b4-838f-5b0180c0f0b9.lovable.app",
+      process.env.CLOUD_ORIGIN || "https://id-preview--f8785c44-0c05-418c-bd7a-27ced71afcdd.lovable.app",
     ),
   },
   resolve: {

@@ -1,9 +1,13 @@
 import { QueryClient } from "@tanstack/react-query";
+import { Fragment } from "react";
 import { createMemoryHistory, createRouter, RouterProvider } from "@tanstack/react-router";
 import { cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { routeTree } from "@/routeTree.gen";
+
+// Browser unit tests mount inside a div, not an SSR document shell.
+Object.assign(routeTree.options, { shellComponent: Fragment });
 
 function renderAt(path: string) {
   const queryClient = new QueryClient();

@@ -1,5 +1,10 @@
 # Roadmap
 
+## Contact and admin update
+- [x] Replace project business contact phones and email; remove previous admin notification destinations.
+- [x] Set the requested admin password securely and verify admin sign-in.
+- [x] Test contact routing and inspect downloadable desktop content for stale destinations.
+
 - [x] Add interactive cable cross-section selection with mm²/AWG alternatives and live recalculation.
 - [x] Add live voltage-drop status badges on SLD cable paths.
 - [x] Correct animated day, night, and grid-outage energy-flow scenarios.

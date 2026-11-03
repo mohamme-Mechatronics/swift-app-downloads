@@ -167,11 +167,12 @@ async function handle(input: z.infer<typeof schema>) {
 export const Route = createFileRoute("/api/public/wa-invoice")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
-        const url = new URL(request.url);
-        return handle(schema.parse(Object.fromEntries(url.searchParams.entries())));
-      },
+      GET: async () => Response.json({ ok: false, error: "method_not_allowed" }, { status: 405 }),
       POST: async ({ request }) => {
+        const { validAdminPassword } = await import("@/lib/admin-password.server");
+        if (!(await validAdminPassword(request.headers.get("X-Admin-Password") || ""))) {
+          return Response.json({ ok: false, error: "unauthorized" }, { status: 401 });
+        }
         let raw: unknown = {};
         try {
           raw = await request.json();
