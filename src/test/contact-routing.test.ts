@@ -18,7 +18,8 @@ describe("Business contact routing", () => {
     const result = runBot({ step: "qnext_ask", customer_name: "عميل", city: "عدن" }, {
       phone: "967711111111", text: "sales_contact", message_id: "contact-test", phone_number_id: "test",
     });
-    expect(result.extra_payloads.length).toBeGreaterThan(0);
-    expect(result.extra_payloads.map((payload: { to?: string }) => payload.to)).toEqual(["967777687107"]);
+    const payloads = result?.extra_payloads ?? [];
+    expect(payloads.length).toBeGreaterThan(0);
+    expect(payloads.map((payload) => typeof payload === "object" && payload !== null && "to" in payload ? payload.to : undefined)).toEqual(["967777687107"]);
   });
 });
