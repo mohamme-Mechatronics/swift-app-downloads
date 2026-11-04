@@ -29,3 +29,4 @@
 
 - Offline Windows build: Electron + local node-server (vite.electron.config.ts, electron/main.cjs); packaged zip is delivered via Files, not the repo (too large). Why: full offline media.
 - Fixed Arabic voice lines are pre-generated to public/audio (tools/voice/gen.ts, index.json) and played before calling /api/tts. Why: voice works offline.
+- Offline Android APK: static SPA build (vite.android.config.ts) wrapped by Capacitor, built in GitHub Actions (.github/workflows/android.yml) and published as a Release. Why: no Android SDK in sandbox; APK too large for the repo.
