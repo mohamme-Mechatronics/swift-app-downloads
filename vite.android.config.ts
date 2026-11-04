@@ -7,6 +7,7 @@ import { defineConfig } from "vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  build: { outDir: "dist-android" },
   define: {
     "import.meta.env.VITE_CLOUD_ORIGIN": JSON.stringify(
       process.env.CLOUD_ORIGIN || "https://hsolar.lovable.app",
