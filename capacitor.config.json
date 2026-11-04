@@ -1,0 +1,6 @@
+{
+  "appId": "com.actes.hsolar",
+  "appName": "ACTES",
+  "webDir": "dist-android/client",
+  "android": { "allowMixedContent": true }
+}
